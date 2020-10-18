@@ -1,11 +1,14 @@
 package com.rivael.dsclient.services;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rivael.dsclient.dto.ClientDTO;
 import com.rivael.dsclient.entities.Client;
 import com.rivael.dsclient.repositories.ClientRepository;
 
@@ -16,13 +19,15 @@ public class ClientService {
 	private ClientRepository repository;
 
 	@Transactional(readOnly = true)
-	public List<Client> findAll() {
-		return repository.findAll();
+	public List<ClientDTO> findAll() {
+		List<Client> list = repository.findAll(); 
+		return list.stream().map(entity -> new ClientDTO(entity)).collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public Client findById(Long id) {
-		return repository.findById(id).get();
+	public ClientDTO findById(Long id) {
+		Optional<Client> opEntity = repository.findById(id); 
+		return new ClientDTO(opEntity.get());
 	}
 	
 }
