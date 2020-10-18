@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.rivael.dsclient.dto.ClientDTO;
 import com.rivael.dsclient.entities.Client;
 import com.rivael.dsclient.repositories.ClientRepository;
+import com.rivael.dsclient.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class ClientService {
@@ -26,8 +27,9 @@ public class ClientService {
 
 	@Transactional(readOnly = true)
 	public ClientDTO findById(Long id) {
-		Optional<Client> opEntity = repository.findById(id); 
-		return new ClientDTO(opEntity.get());
+		Optional<Client> obj = repository.findById(id);
+		Client entity = obj.orElseThrow(() -> new ResourceNotFoundException("Id not found: " + id));
+		return new ClientDTO(entity);
 	}
 	
 }
